@@ -1,9 +1,6 @@
 package za.ac.biic.domain;
 
 import jakarta.persistence.*;
-//import org.w3c.dom.Document;
-import za.ac.biic.domain.Document;
-import za.ac.biic.domain.PlacementStatus;
 import java.util.List;
 import java.util.Objects;
 
