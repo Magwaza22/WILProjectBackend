@@ -135,5 +135,6 @@ class EmployerServiceTest {
         assertTrue(allEmployers.contains(employer1));
         assertTrue(allEmployers.contains(employer2));
         verify(employerRepository, times(1)).findAll();
+
     }
 }
