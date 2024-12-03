@@ -135,6 +135,5 @@ class CoordinatorServiceTest {
         assertTrue(allCoordinators.contains(coordinator1));
         assertTrue(allCoordinators.contains(coordinator2));
         verify(coordinatorRepository, times(1)).findAll();
-
     }
 }
