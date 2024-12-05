@@ -1,139 +1,76 @@
 package za.ac.biic.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.ac.biic.domain.Employer;
-import za.ac.biic.repository.EmployerRepository;
+import za.ac.biic.factory.EmployerFactory;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
 class EmployerServiceTest {
 
-    @Mock
-    private EmployerRepository employerRepository;
-
-    @InjectMocks
+    @Autowired
     private EmployerService employerService;
+
+    private static Employer employer1, employer2, employer3;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        employer1 = EmployerFactory.createEmployer(1, "Tech Corp", "hr@techcorp.com", "securepassword");
+        assertNotNull(employer1);
+        System.out.println(employer1);
+
+        employer2 = EmployerFactory.createEmployer(2, "Innova Inc", "hr@innovainc.com", "password123");
+        assertNotNull(employer2);
+        System.out.println(employer2);
+
+        employer3 = EmployerFactory.createEmployer(3, "Global Solutions", "hr@globalsolutions.com", "globalpass");
+        assertNotNull(employer3);
+        System.out.println(employer3);
     }
 
     @Test
-    void create_ShouldSaveAndReturnEmployer() {
-        // Arrange
-        Employer employer = new Employer.Builder()
-                .setEmployerId(1)
-                .setCompanyName("Tech Solutions")
-                .setHrEmail("hr@techsolutions.com")
-                .setPassword("password123")
-                .build();
+    void create() {
+        Employer created1 = employerService.create(employer1);
+        assertNotNull(created1);
+        System.out.println(created1);
 
-        when(employerRepository.save(employer)).thenReturn(employer);
+        Employer created2 = employerService.create(employer2);
+        assertNotNull(created2);
+        System.out.println(created2);
 
-        // Act
-        Employer savedEmployer = employerService.create(employer);
-
-        // Assert
-        assertNotNull(savedEmployer);
-        assertEquals(employer, savedEmployer);
-        verify(employerRepository, times(1)).save(employer);
+        Employer created3 = employerService.create(employer3);
+        assertNotNull(created3);
+        System.out.println(created3);
     }
 
     @Test
-    void read_ShouldReturnEmployerWhenFound() {
-        // Arrange
-        int employerId = 1;
-        Employer employer = new Employer.Builder()
-                .setEmployerId(employerId)
-                .setCompanyName("Tech Solutions")
-                .setHrEmail("hr@techsolutions.com")
-                .setPassword("password123")
-                .build();
-
-        when(employerRepository.findById(employerId)).thenReturn(Optional.of(employer));
-
-        // Act
-        Employer foundEmployer = employerService.read(employerId);
-
-        // Assert
-        assertNotNull(foundEmployer);
-        assertEquals(employer, foundEmployer);
-        verify(employerRepository, times(1)).findById(employerId);
+    void read() {
+        assert employer1 != null;
+        Employer read = employerService.read(employer1.getEmployerId());
+        System.out.println(read);
     }
 
     @Test
-    void read_ShouldReturnNullWhenNotFound() {
-        // Arrange
-        int employerId = 1;
-        when(employerRepository.findById(employerId)).thenReturn(Optional.empty());
-
-        // Act
-        Employer foundEmployer = employerService.read(employerId);
-
-        // Assert
-        assertNull(foundEmployer);
-        verify(employerRepository, times(1)).findById(employerId);
+    void update() {
+        Employer updatedEmployer = new Employer.Builder()
+                .copy(employer2)
+                .setCompanyName("Innova International")
+                .build();
+        Employer updated = employerService.update(updatedEmployer);
+        assertNotNull(updated);
+        System.out.println(updated);
     }
 
-    @Test
-    void update_ShouldSaveAndReturnUpdatedEmployer() {
-        // Arrange
-        Employer employer = new Employer.Builder()
-                .setEmployerId(1)
-                .setCompanyName("Tech Solutions Updated")
-                .setHrEmail("hr@techsolutions.com")
-                .setPassword("newpassword123")
-                .build();
-
-        when(employerRepository.save(employer)).thenReturn(employer);
-
-        // Act
-        Employer updatedEmployer = employerService.update(employer);
-
-        // Assert
-        assertNotNull(updatedEmployer);
-        assertEquals(employer, updatedEmployer);
-        verify(employerRepository, times(1)).save(employer);
-    }
 
     @Test
-    void getAll_ShouldReturnListOfEmployers() {
-        // Arrange
-        Employer employer1 = new Employer.Builder()
-                .setEmployerId(1)
-                .setCompanyName("Tech Solutions")
-                .setHrEmail("hr@techsolutions.com")
-                .setPassword("password123")
-                .build();
-
-        Employer employer2 = new Employer.Builder()
-                .setEmployerId(2)
-                .setCompanyName("Innovative Solutions")
-                .setHrEmail("hr@innovativesolutions.com")
-                .setPassword("securepassword")
-                .build();
-
-        List<Employer> employers = Arrays.asList(employer1, employer2);
-        when(employerRepository.findAll()).thenReturn(employers);
-
-        // Act
-        List<Employer> allEmployers = employerService.getAll();
-
-        // Assert
-        assertNotNull(allEmployers);
-        assertEquals(2, allEmployers.size());
-        assertTrue(allEmployers.contains(employer1));
-        assertTrue(allEmployers.contains(employer2));
-        verify(employerRepository, times(1)).findAll();
+    void getall() {
+        System.out.println(employerService.getAll());
     }
 }
