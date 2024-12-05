@@ -13,7 +13,7 @@ public class Internship {
     private String position;
     private String requirements;
 
-    @OneToMany(mappedBy = "internship", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "feedbackID", cascade = CascadeType.ALL)
     private List<Feedback> feedback;
 
     public Internship() {

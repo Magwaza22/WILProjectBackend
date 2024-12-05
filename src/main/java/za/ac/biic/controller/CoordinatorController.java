@@ -14,7 +14,7 @@ public class CoordinatorController {
     private final CoordinatorService service;
 
     @Autowired
-    public CoordinatorController(CoordinatorService service) {
+    CoordinatorController(CoordinatorService service) {
         this.service = service;
     }
 

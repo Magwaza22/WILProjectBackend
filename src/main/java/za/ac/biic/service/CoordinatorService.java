@@ -13,7 +13,7 @@ public class CoordinatorService implements ICoordinatorService {
     private final CoordinatorRepository coordinatorRepository;
 
     @Autowired
-    public CoordinatorService(CoordinatorRepository coordinatorRepository) {
+    CoordinatorService(CoordinatorRepository coordinatorRepository) {
         this.coordinatorRepository = coordinatorRepository;
     }
 
