@@ -86,6 +86,14 @@ public class Coordinator {
             this.password = password;
             return this;
         }
+        public Coordinator.Builder copy(Coordinator coordinator) {
+            this.coordinatorId = coordinator.getCoordinatorId();
+            this.name = coordinator.getName();
+            this.email = coordinator.getEmail();
+            this.password = coordinator.getPassword();
+            return this;
+        }
+
         public Coordinator build() {return new Coordinator(this);}
     }
 }
