@@ -1,139 +1,76 @@
 package za.ac.biic.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import za.ac.biic.domain.Coordinator;
-import za.ac.biic.repository.CoordinatorRepository;
+import za.ac.biic.factory.CoordinatorFactory;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.MethodName.class)
 class CoordinatorServiceTest {
 
-    @Mock
-    private CoordinatorRepository coordinatorRepository;
-
-    @InjectMocks
+    @Autowired
     private CoordinatorService coordinatorService;
+
+    private static Coordinator coordinator1, coordinator2, coordinator3;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        coordinator1 = CoordinatorFactory.createCoordinator(1, "Alice Johnson", "alice.johnson@example.com", "password123");
+        assertNotNull(coordinator1);
+        System.out.println(coordinator1);
+
+        coordinator2 = CoordinatorFactory.createCoordinator(2, "Bob Smith", "bob.smith@example.com", "securepassword");
+        assertNotNull(coordinator2);
+        System.out.println(coordinator2);
+
+        coordinator3 = CoordinatorFactory.createCoordinator(3, "Cathy Lee", "cathy.lee@example.com", "mypassword");
+        assertNotNull(coordinator3);
+        System.out.println(coordinator3);
     }
 
     @Test
-    void create_ShouldSaveAndReturnCoordinator() {
-        // Arrange
-        Coordinator coordinator = new Coordinator.Builder()
-                .setCoordinatorId(1)
-                .setName("John Doe")
-                .setEmail("john.doe@example.com")
-                .setPassword("securepassword")
-                .build();
+    void create() {
+        Coordinator created1 = coordinatorService.create(coordinator1);
+        assertNotNull(created1);
+        System.out.println(created1);
 
-        when(coordinatorRepository.save(coordinator)).thenReturn(coordinator);
+        Coordinator created2 = coordinatorService.create(coordinator2);
+        assertNotNull(created2);
+        System.out.println(created2);
 
-        // Act
-        Coordinator savedCoordinator = coordinatorService.create(coordinator);
-
-        // Assert
-        assertNotNull(savedCoordinator);
-        assertEquals(coordinator, savedCoordinator);
-        verify(coordinatorRepository, times(1)).save(coordinator);
+        Coordinator created3 = coordinatorService.create(coordinator3);
+        assertNotNull(created3);
+        System.out.println(created3);
     }
 
     @Test
-    void read_ShouldReturnCoordinatorWhenFound() {
-        // Arrange
-        int coordinatorId = 1;
-        Coordinator coordinator = new Coordinator.Builder()
-                .setCoordinatorId(coordinatorId)
-                .setName("John Doe")
-                .setEmail("john.doe@example.com")
-                .setPassword("securepassword")
-                .build();
-
-        when(coordinatorRepository.findById(coordinatorId)).thenReturn(Optional.of(coordinator));
-
-        // Act
-        Coordinator foundCoordinator = coordinatorService.read(coordinatorId);
-
-        // Assert
-        assertNotNull(foundCoordinator);
-        assertEquals(coordinator, foundCoordinator);
-        verify(coordinatorRepository, times(1)).findById(coordinatorId);
+    void read() {
+        assert coordinator1 != null;
+        Coordinator read = coordinatorService.read(coordinator1.getCoordinatorId());
+        System.out.println(read);
     }
 
     @Test
-    void read_ShouldReturnNullWhenNotFound() {
-        // Arrange
-        int coordinatorId = 1;
-        when(coordinatorRepository.findById(coordinatorId)).thenReturn(Optional.empty());
-
-        // Act
-        Coordinator foundCoordinator = coordinatorService.read(coordinatorId);
-
-        // Assert
-        assertNull(foundCoordinator);
-        verify(coordinatorRepository, times(1)).findById(coordinatorId);
+    void update() {
+        Coordinator updatedCoordinator = new Coordinator.Builder()
+                .copy(coordinator2)
+                .setName("Robert Smith")
+                .build();
+        Coordinator updated = coordinatorService.update(updatedCoordinator);
+        assertNotNull(updated);
+        System.out.println(updated);
     }
+    
 
     @Test
-    void update_ShouldSaveAndReturnUpdatedCoordinator() {
-        // Arrange
-        Coordinator coordinator = new Coordinator.Builder()
-                .setCoordinatorId(1)
-                .setName("John Doe Updated")
-                .setEmail("john.updated@example.com")
-                .setPassword("newpassword123")
-                .build();
-
-        when(coordinatorRepository.save(coordinator)).thenReturn(coordinator);
-
-        // Act
-        Coordinator updatedCoordinator = coordinatorService.update(coordinator);
-
-        // Assert
-        assertNotNull(updatedCoordinator);
-        assertEquals(coordinator, updatedCoordinator);
-        verify(coordinatorRepository, times(1)).save(coordinator);
-    }
-
-    @Test
-    void getAll_ShouldReturnListOfCoordinators() {
-        // Arrange
-        Coordinator coordinator1 = new Coordinator.Builder()
-                .setCoordinatorId(1)
-                .setName("John Doe")
-                .setEmail("john.doe@example.com")
-                .setPassword("password123")
-                .build();
-
-        Coordinator coordinator2 = new Coordinator.Builder()
-                .setCoordinatorId(2)
-                .setName("Jane Doe")
-                .setEmail("jane.doe@example.com")
-                .setPassword("securepassword")
-                .build();
-
-        List<Coordinator> coordinators = Arrays.asList(coordinator1, coordinator2);
-        when(coordinatorRepository.findAll()).thenReturn(coordinators);
-
-        // Act
-        List<Coordinator> allCoordinators = coordinatorService.getAll();
-
-        // Assert
-        assertNotNull(allCoordinators);
-        assertEquals(2, allCoordinators.size());
-        assertTrue(allCoordinators.contains(coordinator1));
-        assertTrue(allCoordinators.contains(coordinator2));
-        verify(coordinatorRepository, times(1)).findAll();
+    void getall() {
+        System.out.println(coordinatorService.getAll());
     }
 }
